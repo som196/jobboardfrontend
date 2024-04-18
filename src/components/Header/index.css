@@ -1,0 +1,83 @@
+* {
+  font-family: 'Roboto';
+  text-decoration: none;
+  color: white;
+}
+
+.header-container-lg {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #272727;
+  background-size: cover;
+  padding: 20px;
+}
+.logout-button-lg {
+  background-color: #4f46e5;
+  padding: 10px;
+  width: 200px;
+  color: white;
+  height: 40px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.home-para-lg {
+  font-size: 20px;
+}
+.jobs-para-lg {
+  font-size: 20px;
+  margin-left: 10px;
+}
+.home-icon {
+  display: none;
+}
+.bag-icon {
+  display: none;
+}
+.logout-button-sm {
+  display: none;
+}
+@media (max-width: 576px) {
+  .logout-button-lg {
+    display: none;
+  }
+  .home-para-lg {
+    display: none;
+  }
+  .jobs-para-lg {
+    display: none;
+  }
+  .home-icon {
+    margin: 5px;
+    display: block;
+  }
+  .bag-icon {
+    display: block;
+    margin: 5px;
+  }
+  .logout-button-sm {
+    display: block;
+    background-color: transparent;
+    border-style: none;
+  }
+  .website-logo-sm {
+    height: 40px;
+    width: 80px;
+  }
+
+  header-container-sm {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #272727;
+    background-size: cover;
+    padding: 20px;
+  }
+}
+.home-logout-container {
+  display: flex;
+  flex-direction: row;
+  color: white;
+}

@@ -1,0 +1,78 @@
+.main-container {
+  background-color: black;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.logo-input-container {
+  background-color: #272727;
+  width: 30%;
+  height: 60%;
+  padding: 20px;
+  border-radius: 20px;
+}
+@media (max-width: 576px) {
+  .logo-input-container {
+    background-color: #272727;
+    width: 50%;
+    height: 60%;
+    padding: 20px;
+    border-radius: 20px;
+  }
+}
+.img-container {
+  text-align: center;
+  height: 70px;
+  margin-bottom: 40px;
+}
+
+.inputs-container {
+  display: flex;
+  flex-direction: column;
+}
+.username-label {
+  font-size: 13px;
+  color: white;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+.password-label {
+  font-size: 13px;
+  margin-top: 10px;
+  margin-left: 10px;
+  color: white;
+}
+.text-input {
+  height: 40px;
+  color: white;
+  background-color: #272727;
+  border: 0.5px solid #ddd;
+  margin: 10px;
+  padding: 10px 10px;
+  caret-color: white;
+}
+.password-input {
+  height: 40px;
+  margin: 10px;
+  color: white;
+  background-color: #272727;
+  border: 0.5px solid #ddd;
+  padding: 10px 10px;
+  caret-color: white;
+}
+.login-button {
+  background-color: #4f46e5;
+  color: white;
+  height: 40px;
+  margin: 10px;
+  font-size: 14px;
+  width: 95%;
+  border-radius: 10px;
+  border-color: transparent;
+  cursor: pointer;
+}
+.error-message {
+  color: red;
+}
