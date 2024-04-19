@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useCallback} from 'react'
 import {BsSearch, BsBriefcaseFill} from 'react-icons/bs'
 import {RiStarFill} from 'react-icons/ri'
 import {MdPlace} from 'react-icons/md'
@@ -60,28 +60,35 @@ const Job = () => {
   const searchInputChanged = event => {
     setSearchInput(event.target.value)
   }
-  const fetchProfileDetails = async () => {
-    const profileApiUrl = 'https://apis.ccbp.in/profile'
-    const options = {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      method: 'GET',
-    }
-    const response = await fetch(profileApiUrl, options)
-    if (response.ok) {
-      const data = await response.json()
-      const formattedData = {
-        name: data.profile_details.name,
-        profileImageUrl: data.profile_details.profile_image_url,
-        shortBio: data.profile_details.short_bio,
+
+  const fetchProfileDetails = useCallback(async () => {
+    try {
+      const profileApiUrl = 'https://apis.ccbp.in/profile'
+      const options = {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+        method: 'GET',
       }
-      setProfileDetails(formattedData)
-      setProfileDetailsApiStatus(true)
-    } else {
+      const response = await fetch(profileApiUrl, options)
+      if (response.ok) {
+        const data = await response.json()
+        const formattedData = {
+          name: data.profile_details.name,
+          profileImageUrl: data.profile_details.profile_image_url,
+          shortBio: data.profile_details.short_bio,
+        }
+        setProfileDetails(formattedData)
+        setProfileDetailsApiStatus(true)
+      } else {
+        setProfileDetailsApiStatus(false)
+      }
+    } catch (error) {
+      console.error('Error fetching profile details:', error)
       setProfileDetailsApiStatus(false)
     }
-  }
+  }, [jwtToken])
+
   const returnProfileDetailsJsxSuccess = () => {
     const {name, profileImageUrl, shortBio} = profileDetails
     return (
@@ -164,38 +171,43 @@ const Job = () => {
     </div>
   )
 
-  const fetchJobDetails = async () => {
-    setLoading(true)
-    const jobsApiUrl = `https://apis.ccbp.in/jobs?employment_type=${activeEmploymentTypeIds.join(
-      ',',
-    )}&minimum_package=${activeasalaryRangeIds}&search=${searchInput}`
-    const options = {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      method: 'GET',
-    }
-    const response = await fetch(jobsApiUrl, options)
-
-    if (response.ok) {
-      const data = await response.json()
-      const formattedJobData = data.jobs.map(each => ({
-        companyLogoUrl: each.company_logo_url,
-        employmentType: each.employment_type,
-        id: each.id,
-        jobDescription: each.job_description,
-        location: each.location,
-        packagePerAnnum: each.package_per_annum,
-        rating: each.rating,
-        title: each.title,
-      }))
-      setJobData(formattedJobData)
-      setJobsApiUrlStatus(true)
-    } else {
+  const fetchJobDetails = useCallback(async () => {
+    try {
+      setLoading(true)
+      const jobsApiUrl = `https://apis.ccbp.in/jobs?employment_type=${activeEmploymentTypeIds.join(
+        ',',
+      )}&minimum_package=${activeasalaryRangeIds}&search=${searchInput}`
+      const options = {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+        method: 'GET',
+      }
+      const response = await fetch(jobsApiUrl, options)
+      if (response.ok) {
+        const data = await response.json()
+        const formattedJobData = data.jobs.map(each => ({
+          companyLogoUrl: each.company_logo_url,
+          employmentType: each.employment_type,
+          id: each.id,
+          jobDescription: each.job_description,
+          location: each.location,
+          packagePerAnnum: each.package_per_annum,
+          rating: each.rating,
+          title: each.title,
+        }))
+        setJobData(formattedJobData)
+        setJobsApiUrlStatus(true)
+      } else {
+        setJobsApiUrlStatus(false)
+      }
+    } catch (error) {
+      console.error('Error fetching job details:', error)
       setJobsApiUrlStatus(false)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
-  }
+  }, [activeEmploymentTypeIds, activeasalaryRangeIds, jwtToken, searchInput])
 
   const filterIconClicked = () => fetchJobDetails()
 
@@ -215,6 +227,7 @@ const Job = () => {
       <p className="failure-view-para">
         We cannot seem to find the page you are looking for
       </p>
+
       <button
         type="button"
         className="retry-button-in-jobspage-failed"
@@ -249,53 +262,49 @@ const Job = () => {
   const returnSalaryFilters = () => (
     <div className="salary-range-filter-container">
       <h1 className="salary-range-filter-heading">Salary Range</h1>
-      {salaryRangesList.map(each => (
-        <div key={each.salaryRangeId}>
-          <button
-            type="button"
-            onClick={filterIconClicked}
-            className="button-item"
-          >
-            <input
-              type="radio"
-              id={each.salaryRangeId}
-              name="salary"
-              value={each.label}
-              onChange={salaryRangeFilterChanges}
-              className="checkbox-filter"
-            />
-            <label htmlFor={each.salaryRangeId} className="label-filter">
-              {each.label}
-            </label>
-          </button>
-        </div>
-      ))}
+      <ul className="unordered-list-container">
+        {salaryRangesList.map(each => (
+          <li key={each.salaryRangeId} className="list-item">
+            <button type="button" className="button-item">
+              <input
+                type="radio"
+                id={each.salaryRangeId}
+                name="salary"
+                value={each.label}
+                onChange={salaryRangeFilterChanges}
+                className="checkbox-filter"
+              />
+              <label htmlFor={each.salaryRangeId} className="label-filter">
+                {each.label}
+              </label>
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 
   const returnEmploymentFilters = () => (
     <div className="types-of-employement-filter-container">
       <h1 className="types-of-employement-heading">Types of Employement</h1>
-      {employmentTypesList.map(each => (
-        <div key={each.employmentTypeId}>
-          <button
-            type="button"
-            onClick={filterIconClicked}
-            className="button-item"
-          >
-            <input
-              type="checkbox"
-              id={each.employmentTypeId}
-              onChange={employementIdsFilterChanges}
-              name="employement_type"
-              className="checkbox-filter"
-            />
-            <label htmlFor={each.employmentTypeId} className="label-filter">
-              {each.label}
-            </label>
-          </button>
-        </div>
-      ))}
+      <ul className="unordered-list-container">
+        {employmentTypesList.map(each => (
+          <li key={each.employmentTypeId} className="list-item">
+            <button type="button" className="button-item">
+              <input
+                type="checkbox"
+                id={each.employmentTypeId}
+                onChange={employementIdsFilterChanges}
+                name="employement_type"
+                className="checkbox-filter"
+              />
+              <label htmlFor={each.employmentTypeId} className="label-filter">
+                {each.label}
+              </label>
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 
@@ -314,7 +323,6 @@ const Job = () => {
         data-testid="searchButton"
         aria-label="search icons"
         className="search-icon-button-sm"
-        onClick={filterIconClicked}
       >
         <BsSearch className="search-icon-sm" />
       </button>
@@ -336,7 +344,6 @@ const Job = () => {
         data-testid="searchButton"
         aria-label="search icons"
         className="search-icon-button-lg"
-        onClick={filterIconClicked}
       >
         <BsSearch className="search-icon-lg" />
       </button>
@@ -398,7 +405,7 @@ const Job = () => {
   useEffect(() => {
     fetchProfileDetails()
     fetchJobDetails()
-  }, [])
+  }, [fetchProfileDetails, fetchJobDetails])
 
   return <div>{isLoading ? isLoadingDots() : loadJobData()}</div>
 }
