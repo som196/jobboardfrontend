@@ -178,61 +178,60 @@ const JobItemDetails = props => {
     </div>
   )
 
-  const fetchJobDetails = async () => {
-    setLoading(true)
-    const jobSpecificUrl = `https://apis.ccbp.in/jobs/${id}`
-    const options = {
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-      method: 'GET',
-    }
-    const response = await fetch(jobSpecificUrl, options)
-    if (response.ok) {
-      const data = await response.json()
-      const jobDetails = data.job_details
-      const convertedtodata = Array(jobDetails)
-      const formattedJobsData = convertedtodata.map(each => ({
-        companyLogoUrl: each.company_logo_url,
-        title: each.title,
-        companyWebsiteUrl: each.company_website_url,
-        employmentType: each.employment_type,
-        id: each.id,
-        jobDescription: each.job_description,
-        location: each.location,
-        packagePerAnnum: each.package_per_annum,
-        rating: each.rating,
-        skills: each.skills.map(eachSkill => ({
-          imageUrl: eachSkill.image_url,
-          name: eachSkill.name,
-        })),
-        lifeatcompanyDescription: each.life_at_company.description,
-        lifeatcompanyImageUrl: each.life_at_company.image_url,
-      }))
-
-      const formattedSimilarJobsData = data.similar_jobs.map(each => ({
-        companyLogoUrl: each.company_logo_url,
-        employmentType: each.employment_type,
-        id: each.id,
-        jobDescription: each.job_description,
-        location: each.location,
-        packagePerAnnum: each.package_per_annum,
-        rating: each.rating,
-        title: each.title,
-      }))
-
-      setJobData(formattedJobsData)
-      setSimilarJobsDetails(formattedSimilarJobsData)
-      setJobsApiUrlStatus(true)
-    } else {
-      setJobsApiUrlStatus(false)
-    }
-    setLoading(false)
-  }
-
   useEffect(() => {
+    const fetchJobDetails = async () => {
+      setLoading(true)
+      const jobSpecificUrl = `https://apis.ccbp.in/jobs/${id}`
+      const options = {
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+        },
+        method: 'GET',
+      }
+      const response = await fetch(jobSpecificUrl, options)
+      if (response.ok) {
+        const data = await response.json()
+        const jobDetails = data.job_details
+        const convertedtodata = Array(jobDetails)
+        const formattedJobsData = convertedtodata.map(each => ({
+          companyLogoUrl: each.company_logo_url,
+          title: each.title,
+          companyWebsiteUrl: each.company_website_url,
+          employmentType: each.employment_type,
+          id: each.id,
+          jobDescription: each.job_description,
+          location: each.location,
+          packagePerAnnum: each.package_per_annum,
+          rating: each.rating,
+          skills: each.skills.map(eachSkill => ({
+            imageUrl: eachSkill.image_url,
+            name: eachSkill.name,
+          })),
+          lifeatcompanyDescription: each.life_at_company.description,
+          lifeatcompanyImageUrl: each.life_at_company.image_url,
+        }))
+
+        const formattedSimilarJobsData = data.similar_jobs.map(each => ({
+          companyLogoUrl: each.company_logo_url,
+          employmentType: each.employment_type,
+          id: each.id,
+          jobDescription: each.job_description,
+          location: each.location,
+          packagePerAnnum: each.package_per_annum,
+          rating: each.rating,
+          title: each.title,
+        }))
+
+        setJobData(formattedJobsData)
+        setSimilarJobsDetails(formattedSimilarJobsData)
+        setJobsApiUrlStatus(true)
+      } else {
+        setJobsApiUrlStatus(false)
+      }
+      setLoading(false)
+    }
     fetchJobDetails()
-  }, [id])
+  }, [id, jwtToken])
 
   return (
     <div>
