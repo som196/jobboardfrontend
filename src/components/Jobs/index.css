@@ -54,7 +54,16 @@
 .types-of-employement-filter-container {
   padding: 10px;
 }
-.salary-range-filter-container {
+<<<<<<< HEAD ======= .unordered-list-container {
+  list-style: none;
+}
+.list-item {
+  list-style: none;
+  text-align: left;
+  padding: 0px;
+}
+
+>>>>>>>used usecallback .salary-range-filter-container {
   padding: 10px;
 }
 .types-of-employement-heading {
